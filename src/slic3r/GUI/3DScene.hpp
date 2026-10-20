@@ -488,6 +488,12 @@ public:
     GLVolume* new_toolpath_volume(const ColorRGBA& rgba);
     GLVolume* new_nontoolpath_volume(const ColorRGBA& rgba);
 
+    struct RenderContext
+    {
+        GLShaderProgram* shader;
+        ModelObjectPtrs& model_objects;
+        std::vector<ColorRGBA>& colors;
+    };
     float get_selection_support_normal_z() const;
     // Render the volumes by OpenGL.
     //BBS: add outline drawing logic
@@ -497,8 +503,8 @@ public:
                 const Transform3d&                    projection_matrix,
                 const GUI::Size&                      cnv_size,
                 std::function<bool(const GLVolume &)> filter_func   = std::function<bool(const GLVolume &)>(),
-                bool                                  partly_inside_enable =true
-           ) const;
+                bool                                  partly_inside_enable = true,
+                RenderContext*                        context = nullptr) const;
 
     // Clear the geometry
     void clear() { for (auto *v : volumes) delete v; volumes.clear(); }
