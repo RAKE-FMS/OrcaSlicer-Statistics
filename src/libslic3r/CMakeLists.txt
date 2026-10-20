@@ -78,6 +78,8 @@ set(lisbslic3r_sources
     BoundingBox.cpp
     BoundingBox.hpp
     BridgeDetector.cpp
+    PreviewCapture.cpp
+    PreviewCapture.hpp
     BridgeDetector.hpp
     Brim.cpp
     BrimEarsPoint.hpp

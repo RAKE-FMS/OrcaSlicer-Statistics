@@ -457,8 +457,11 @@ void GLModel::init_from(const indexed_triangle_set& its)
     data.reserve_indices(3 * its.indices.size());
 
     // Read user preference: smooth normals enabled
-    const bool realistic_mode = wxGetApp().app_config != nullptr && wxGetApp().app_config->get_bool(SETTING_OPENGL_REALISTIC_MODE);
-    const bool smooth_normals_enabled = wxGetApp().app_config != nullptr && wxGetApp().app_config->get_bool(SETTING_OPENGL_PHONG_SMOOTH_NORMALS);
+    // CLI captures have an OpenGL context without a GUI application or its preferences.
+    const auto* app = dynamic_cast<GUI_App*>(wxApp::GetInstance());
+    const auto* config = app ? app->app_config : nullptr;
+    const bool realistic_mode = config != nullptr && config->get_bool(SETTING_OPENGL_REALISTIC_MODE);
+    const bool smooth_normals_enabled = config != nullptr && config->get_bool(SETTING_OPENGL_PHONG_SMOOTH_NORMALS);
 
     if (realistic_mode && smooth_normals_enabled) {
         // Use per-corner smooth normals (via IGL)

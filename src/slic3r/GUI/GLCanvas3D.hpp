@@ -56,6 +56,7 @@ namespace CustomGCode { struct Item; }
 namespace GUI {
 
 class Bed3D;
+class PartPlate;
 class PartPlateList;
 
 #if ENABLE_RETINA_GL
@@ -725,6 +726,7 @@ public:
     CameraTarget m_camera_target;
 #endif // ENABLE_SHOW_CAMERA_TARGET
     GLModel m_background;
+    size_t m_capture_scene_revision = 0;
     unsigned int m_fxaa_texture_id{ 0 };
     std::array<unsigned int, 2> m_fxaa_texture_size{ 0, 0 };
     unsigned int m_ssao_color_texture_id{ 0 };
@@ -739,6 +741,10 @@ public:
     bool is_initialized() const { return m_initialized; }
 
     void set_context(wxGLContext* context) { m_context = context; }
+    // UI thread only; the caller must wait for slicing/export to finish.
+    friend class PreviewCaptureDialog;
+    ThumbnailData render_preview_capture(const PreviewCapture& capture, PartPlate& plate, bool unsliced = false);
+    void          export_preview_capture(const std::string& path, PartPlate& plate, bool unsliced = false);
     void set_type(ECanvasType type) { m_canvas_type = type; }
     ECanvasType get_canvas_type() { return m_canvas_type; }
 
@@ -1276,6 +1282,9 @@ private:
     void _render_assemble_view_toolbar() const;
     void _render_return_toolbar() const;
     void _render_canvas_toolbar();
+    void _record_preview_capture();
+    void _restore_preview_capture();
+
     void _render_separator_toolbar_right() const;
     void _render_separator_toolbar_left() const;
     void _render_collapse_toolbar() const;
